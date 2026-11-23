@@ -1,0 +1,6 @@
+dist/
+.local/
+node_modules/
+vercel-static/
+.vercel/
+.env*
