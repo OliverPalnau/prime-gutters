@@ -184,3 +184,18 @@ test('natural copper has separate installed and cutaway photographs',async()=>{
   const res=await fetchPath(path);assert.equal(res.status,200);assert.equal(res.headers.get('content-type'),'image/webp');
  }
 });
+
+test('local project pages offer the owner, sizing and exterior designer, with a localized estimate',async()=>{
+ for(const prefix of ['','/es']){
+  const html=await(await fetchPath(prefix+'/areas-served/suffolk-county/kings-park/')).text();
+  const main=html.split('<main id="main">')[1].split('</main>')[0];
+  assert.ok(main.indexOf('local-byline')<main.indexOf('id="local-about"'));
+  assert.ok(main.includes('owner-portrait')&&main.includes('data-capacity')&&main.includes('id="exterior-studio"'));
+  for(const surface of ['gutter','roof','siding','trim','window','door'])assert.ok(main.includes('data-surface="'+surface+'"'));
+  assert.match(main,/service=seamless-gutter-installation&amp;town=Kings%20Park/);
+  const collage=html.match(/class="finish-collage">([\s\S]*?)<\/div>/)[1];
+  assert.equal((collage.match(/<a href=/g)||[]).length,17);
+  assert.ok(collage.includes(prefix+'/gutter-colors/?gutter=Forest%20Green'));
+  assert.match(html,/<a class="ryan-call" href="tel:\+16313745916"/);
+ }
+});

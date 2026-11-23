@@ -23,11 +23,11 @@ export function profileBadges(l) {
     <a class="google-invite" href="${writeGoogleReview}" aria-label="${L(l,'Review Prime Gutters on Google','Escriba una reseña de Prime Gutters en Google')}"><img width="144" height="77" src="/media/directory/review-us-on-google.webp" loading="lazy" alt="${L(l,'Leave us a Google review','Escriba una reseña en Google')}"></a>
   </div>`;
 }
-export function sizeComparison(l,full=false) {
+export function sizeComparison(l,full=false,embedded=false) {
   const t=(a,b)=>L(l,a,b),initial=capacityExample(slopeExamples[0]);
   const styles=systemProfiles.slice(0,2).map(prof=>`<article class="size-card">
-    <a class="size-image" href="${href(l,'/visualizer/?profile='+prof.id)}"><img src="${prof.image}" loading="lazy" width="960" height="620" alt="${pick(l,prof.name)}"></a>
-    <div><h3>${pick(l,prof.name)}</h3><p>${pick(l,prof.desc)}</p>${aLink(l,'/visualizer/?profile='+prof.id,t('Try this size','Probar este tamaño'))}</div>
+    <a class="size-image" href="${(embedded?'?profile='+prof.id+'#exterior-studio':href(l,'/visualizer/?profile='+prof.id))}"><img src="${embedded?(prof.id==='k-5'?'/media/finishes/eave-base.webp':'/media/finishes/k-6-base.webp'):prof.image}" loading="lazy" width="960" height="620" alt="${pick(l,prof.name)}"></a>
+    <div><h3>${pick(l,prof.name)}</h3><p>${pick(l,prof.desc)}</p>${(embedded?`<a class="textlink" href="?profile=${prof.id}#exterior-studio">${t('Try this size','Probar este tamaño')}</a>`:aLink(l,'/visualizer/?profile='+prof.id,t('Try this size','Probar este tamaño')))}</div>
   </article>`).join('');
   const slopeSelect=slopeExamples.map(row=>`<option value="${row.slope}">${row.slope} ${t('in. per foot','pulg. por pie')}</option>`).join('');
   return `<section class="section sizing"><div class="wrap">
@@ -140,8 +140,9 @@ export function localBody(l,{county:c,name}){
  const locationQuote='/estimate/?town='+encodeURIComponent(name);
  return `<section class="section"><div class="wrap local-service-grid"><div>
  <p class="eyebrow">${t('Service at your property','Servicio en su propiedad')}</p><h2>${t('Plan your gutter project in '+name+'.','Planifique su proyecto de canaletas en '+name+'.')}</h2>
+ <p class="local-byline"><a href="#local-about">${t('Ryan Moore, owner of Prime Gutters','Ryan Moore, propietario de Prime Gutters')}</a> · ${t('Based in Huntington, serving '+name,'Con sede en Huntington y servicio en '+name)}</p>
  <p>${t('For a leak, send Ryan a ground-level photo of the affected corner and the downspout it feeds. For a new installation, share the roof plan or the sides of the building you want included.','Para una fuga, envíe a Ryan una foto de la esquina afectada y su bajante, tomada desde el suelo. Para una instalación nueva, comparta el plano del techo o los lados del edificio que desea incluir.')}</p>
- <div class="actions">${aLink(l,locationQuote,t('Get an estimate in '+name,'Solicitar presupuesto en '+name),'btn cyan')}${aLink(l,'/visualizer/',t('Compare gutter options','Compare opciones'))}</div>
+ <div class="actions">${aLink(l,locationQuote,t('Get an estimate in '+name,'Solicitar presupuesto en '+name),'btn cyan')}${ `<a class="textlink" href="#exterior-studio">${t('Compare gutter options','Compare opciones')}</a>`}</div>
  <h3>${relatedHeading}</h3><div class="town-links">${(related.length?related:nearPlaces(c,name)).map(n=>aLink(l,locationPath(c,n),n,'town-link')).join('')}</div>
  </div><aside class="local-options"><h3>${t('What does the property need?','¿Qué necesita la propiedad?')}</h3>
  ${[['seamless-gutter-installation',t('New seamless gutters','Canaletas nuevas sin juntas')],['gutter-repair',t('Leaking or sagging gutters','Canaletas con fugas o caídas')],['commercial-gutters',t('Commercial estimate','Presupuesto comercial')],['gutter-guards',t('Add gutter guards','Añadir protectores')]].map(([s,n])=>aLink(l,locationQuote+'&service='+s,n,'local-option')).join('')}

@@ -226,7 +226,7 @@ async function initializeDesigner(){
   const quoteLink=new URL(base,location.origin);
   if(state.guard)quoteLink.searchParams.append('service','gutter-guards');
   quoteLink.searchParams.set('design',brief);target.href=quoteLink.href;
-  for(const a of all('.head-quote,.bottom-cta .btn'))a.href=quoteLink.href;
+  if(!location.pathname.includes('/areas-served/'))for(const a of all('.head-quote,.bottom-cta .btn'))a.href=quoteLink.href;
  }
  function controls(){
   for(const b of tabs)b.setAttribute('aria-pressed',String(b.dataset.surface===surface));
@@ -497,3 +497,12 @@ function initializeMobilePreview(root,preview,panel,notes){
 }
 initializeMobilePreview($('[data-finish-board]'),$('.finish-figure'),$('.finish-panel'),['.installed-caption-note']);
 initializeMobilePreview($('#designer'),$('.design-photo'),$('.design-panel'),['.system-sample','.sample-note']);
+
+const callWidget=document.querySelector('.ryan-call');
+const liveDesigner=document.querySelector('[data-finish-board],#designer');
+if(callWidget&&liveDesigner&&'IntersectionObserver' in window){
+ const visibility=new IntersectionObserver(([entry])=>{
+  callWidget.toggleAttribute('data-design-active',entry.isIntersecting);
+ });
+ visibility.observe(liveDesigner);
+}
