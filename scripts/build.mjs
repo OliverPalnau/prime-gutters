@@ -26,7 +26,8 @@ const referenced=['site.css','upgrades.css','app.js','favicon.svg','roof-finishe
 for (const dir of ['profiles','directory','brand','finishes','people','inspector']){
  for (const name of fs.readdirSync('public/media/'+dir)) if(name!=='finish-proof.webp' && mime[path.extname(name)]) referenced.push('media/'+dir+'/'+name);
 }
-referenced.push('media/mansion-black-gutters.webp','media/mansion-eave-detail.webp','media/capital-detail.webp');
+referenced.push('media/mansion-black-gutters.webp','media/mansion-eave-detail.webp','media/capital-detail.webp',
+ 'media/spring-rain-roofline.webp','media/spring-rain-roofline-mobile.webp');
 for(const name of referenced){
  const file=name==='app.js'?Buffer.from(read('public/app.js').replaceAll('__FINISH_REVISION__',revision)):fs.readFileSync('public/'+name);
  if(vercelBuild){
