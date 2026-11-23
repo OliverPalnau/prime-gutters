@@ -1,0 +1,99 @@
+{
+  "k-5.webp": {
+    "kind": "Original technical illustration",
+    "description": "Five-inch nominal K-style gutter at a shingled eave; open cutaway shows a flat bottom and sculpted front wall.",
+    "reference": "https://www.kmsheetmetal.com/wp-content/uploads/gutters/submittals/5-inches-k-style-gutter.pdf",
+    "dimensions": [
+      960,
+      620
+    ]
+  },
+  "k-6.webp": {
+    "kind": "Original technical illustration",
+    "description": "Six-inch nominal K-style gutter on the same eave, at the same camera scale.",
+    "reference": "https://www.kmsheetmetal.com/wp-content/uploads/gutters/submittals/6-inches-k-style-gutter.pdf",
+    "dimensions": [
+      960,
+      620
+    ]
+  },
+  "half-round.webp": {
+    "kind": "Original technical illustration",
+    "description": "Copper-colored half-round trough with a curved cradle hanger.",
+    "reference": "https://www.kmsheetmetal.com/wp-content/uploads/gutters/submittals/6-inch-reverse-bead-half-round-gutter.pdf",
+    "dimensions": [
+      960,
+      620
+    ]
+  },
+  "box.webp": {
+    "kind": "Original technical illustration",
+    "description": "Commercial box-profile gutter with a mostly straight front wall and flat bottom.",
+    "reference": "https://www.kmsheetmetal.com/wp-content/uploads/gutters/submittals/6-inches-a-style-commercial-box-gutter.pdf",
+    "dimensions": [
+      960,
+      620
+    ]
+  },
+  "guard.webp": {
+    "kind": "Original technical illustration",
+    "description": "Mesh screen illustration over a K-style gutter; mounting and products vary.",
+    "reference": null,
+    "dimensions": [
+      960,
+      620
+    ]
+  },
+  "new-build.webp": {
+    "kind": "Illustrative project context",
+    "description": "A timber-framed house under construction.",
+    "source": "https://github.com/OliverPalnau/omars-professional-siding/blob/main/public/media/service-context/home-framing.webp",
+    "dimensions": [
+      1100,
+      733
+    ]
+  },
+  "commercial.webp": {
+    "kind": "Context photograph",
+    "description": "Storefronts on Jericho Turnpike in Mineola, New York. Illustrates a commercial property setting.",
+    "author": "Joe Mabel",
+    "source": "https://commons.wikimedia.org/wiki/File:Mineola_-_Jericho_Turnpike_01.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Resized and encoded as WebP.",
+    "dimensions": [
+      1050,
+      697
+    ]
+  },
+  "half-round-installed.webp": {
+    "kind": "Installation reference photograph",
+    "description": "Installed copper half-round gutter and a round downspout.",
+    "author": "Rutland Copper Gutter Supply & Architectural Copperwork",
+    "source": "https://commons.wikimedia.org/wiki/File:Copper-Gutter-System.png",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "changes": "Encoded as WebP.",
+    "dimensions": [
+      390,
+      293
+    ]
+  },
+  "bay-shore-snow.webp": {
+    "title": "Bay shore January snow storm 2017",
+    "author": "LostplanetKD73",
+    "source": "https://commons.wikimedia.org/wiki/File:Bay_shore_January_snow_storm_2017.jpg",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "changes": "Resized and converted to WebP"
+  },
+  "coe-hall-winter.webp": {
+    "title": "Coe Hall - PFA; January 2006",
+    "author": "Robert Swanson",
+    "crop": "Ali’i",
+    "source": "https://commons.wikimedia.org/wiki/File:Coe_Hall_-_PFA;_January_2006.jpg",
+    "license": "CC BY 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+    "changes": "Converted cropped source to WebP"
+  }
+}

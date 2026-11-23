@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "node scripts/build.mjs --vercel",
+  "outputDirectory": "vercel-static",
+  "functions": {
+    "api/site.js": { "includeFiles": "dist/server/index.js" }
+  },
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/api/site?__pg_route=/$1" }
+  ]
+}

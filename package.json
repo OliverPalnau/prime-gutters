@@ -1,0 +1,13 @@
+{
+  "name": "prime-gutters",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "test": "node --test scripts/site.test.mjs"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.9.0"
+  }
+}
