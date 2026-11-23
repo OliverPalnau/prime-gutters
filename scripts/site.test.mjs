@@ -199,3 +199,15 @@ test('local project pages offer the owner, sizing and exterior designer, with a 
   assert.match(html,/<a class="ryan-call" href="tel:\+16313745916"/);
  }
 });
+
+test('only individual reviews with an exact five-star rating are featured',async()=>{
+ const {reviewsSection}=await import('../src/customer-resources.mjs');
+ const example={author:'Featured author',rating:5,text:'Test excerpt',url:'https://example.com'};
+ const excluded=[1,2,3,4,4.9,6,null,undefined,'5'].map(rating=>({...example,author:'Excluded author',rating}));
+ for(const lang of ['en','es']){
+  const html=reviewsSection(lang,false,[...excluded,null,example]);
+  assert.equal((html.match(/<figure class="review-quote">/g)||[]).length,1);
+  assert.ok(html.includes('Featured author')&&html.includes('★★★★★')&&!html.includes('Excluded author'));
+  assert.ok(!reviewsSection(lang,true,excluded).includes('<blockquote'));
+ }
+});

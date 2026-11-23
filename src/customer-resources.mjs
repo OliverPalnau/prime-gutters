@@ -8,21 +8,17 @@ export const paymentMethods=[
   ['visa','Visa'],['mastercard','Mastercard'],['amex','American Express'],
   ['discover','Discover'],['zelle','Zelle'],['venmo','Venmo']
 ];
-const reviewSnapshot={
-  date:'2026-11-22',rating:4.4,count:20,
-  reviews:[
+const googleReviewExcerpts=[
     {author:'Gerald Curreri',rating:5,text:'His price was very fair, maybe even low for the excellent service.',url:'https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s100256627110987139298!2s0x89e827c7aedc0001:0x5a178152b3827fb3'},
     {author:'Alicia Sable',rating:5,text:'The quality of his work is top notch and they are just beautiful!',url:'https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s113772400270308675433!2s0x89e827c7aedc0001:0x5a178152b3827fb3'}
-  ]
-};
+];
 function paymentMarks(l){
   return '<ul class="pay-marks" aria-label="'+L(l,'Payment methods','Métodos de pago')+'">'+paymentMethods.map(([id,label])=>'<li><img src="/media/directory/pay-'+id+'.svg" width="56" height="34" alt="'+label+'"></li>').join('')+'</ul>';
 }
-export function reviewsSection(l,standalone=false){
- const t=(a,b)=>L(l,a,b),summary=reviewSnapshot,heading=standalone?'h1':'h2';
- const date=t('Nov 22, 2026','22 de noviembre de 2026');
- const cards=summary.reviews.map(r=>'<figure class="review-quote"><div class="review-by"><figcaption>'+r.author+'</figcaption><span class="review-stars" role="img" aria-label="'+r.rating+t(' out of 5 stars',' de 5 estrellas')+'">'+'★'.repeat(r.rating)+'</span></div><blockquote lang="en">“'+esc(r.text)+'”</blockquote><a href="'+esc(r.url)+'">'+t('View original Google review','Ver reseña original en Google')+'</a></figure>').join('');
- return '<section class="section reviews-section"><div class="wrap"><p class="eyebrow"><span></span>Prime Gutters · Huntington, NY</p><div class="review-layout"><div class="review-intro"><'+heading+'>'+t('Google reviews','Reseñas de Google')+'</'+heading+'><p class="review-score"><strong>'+summary.rating.toLocaleString(l)+'</strong> / 5 · '+summary.count+t(' Google reviews',' reseñas en Google')+'</p><p class="review-date">'+t('Checked ','Consultado el ')+'<time datetime="'+summary.date+'">'+date+'</time></p><div class="review-links"><a class="btn ink" href="'+esc(googleReviews)+'">'+t('Read all Google reviews','Leer todas las reseñas')+'</a><a class="textlink" href="'+esc(writeGoogleReview)+'">'+t('Review us on Google','Escribir una reseña en Google')+'</a></div></div><div class="review-quotes">'+cards+'</div></div></div></section>';
+export function reviewsSection(l,standalone=false,reviews=googleReviewExcerpts){
+ const t=(a,b)=>L(l,a,b),heading=standalone?'h1':'h2';
+ const cards=reviews.filter(r=>r?.rating===5).map(r=>'<figure class="review-quote"><div class="review-by"><figcaption>'+esc(r.author)+'</figcaption><span class="review-stars" role="img" aria-label="'+r.rating+t(' out of 5 stars',' de 5 estrellas')+'">'+'★'.repeat(r.rating)+'</span></div><blockquote lang="en">“'+esc(r.text)+'”</blockquote><a href="'+esc(r.url)+'">'+t('View original Google review','Ver reseña original en Google')+'</a></figure>').join('');
+ return '<section class="section reviews-section"><div class="wrap"><p class="eyebrow"><span></span>Prime Gutters · Huntington, NY</p><div class="review-layout"><div class="review-intro"><'+heading+'>'+t('Google reviews','Reseñas de Google')+'</'+heading+'>'+(cards?'<p>'+t('Featured five-star reviews','Reseñas destacadas de cinco estrellas')+'</p>':'')+'<div class="review-links"><a class="btn ink" href="'+esc(googleReviews)+'">'+t('Read all Google reviews','Leer todas las reseñas')+'</a><a class="textlink" href="'+esc(writeGoogleReview)+'">'+t('Review us on Google','Escribir una reseña en Google')+'</a></div></div><div class="review-quotes">'+cards+'</div></div></div></section>';
 }
 export function customerFooter(l){
  const t=(a,b)=>L(l,a,b);
