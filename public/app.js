@@ -251,7 +251,13 @@ async function initializeDesigner(){
  }
  for(const b of all('[data-profile]',root))b.addEventListener('click',()=>{state.profile=b.dataset.profile;feedback.textContent='';paint()});
  $('#system-guard',root).addEventListener('change',e=>{state.guard=e.target.checked;feedback.textContent='';paint()});
- tabs.forEach(b=>b.addEventListener('click',()=>{surface=b.dataset.surface;showView(surface==='gutter'?'detail':'whole');feedback.textContent='';controls();paint()}));
+ tabs.forEach(button=>button.addEventListener('click',()=>{
+  surface=button.dataset.surface;
+  if(surface!=='gutter')showView('whole');
+  feedback.textContent='';
+  controls();
+  paint();
+ }));
  for(const b of viewButtons)b.addEventListener('click',()=>showView(b.dataset.view));
  $('[data-show-cutaway]',root).addEventListener('click',()=>{
   showView('detail');$('.inspector-focus button',root).focus({preventScroll:true});$('#house-preview',root).scrollIntoView({block:'start'});
