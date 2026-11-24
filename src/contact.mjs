@@ -27,6 +27,18 @@ export function contactSection(l, state = {}) {
  return '<section class="section contact-page"><div class="wrap contact-layout">'+intro+form+'</div></section>';
 }
 
+async function notifyContact(recipient,id,record,page) {
+ const response=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(recipient),{
+  method:'POST',headers:{Accept:'application/json','Content-Type':'application/json'},
+  signal:AbortSignal.timeout(6500),
+  body:JSON.stringify({name:record.name,email:record.email,phone:record.phone||'—',message:record.message,reference:id,
+   _subject:'Prime Gutters · New contact message',_replyto:record.email,_url:page,_template:'table'})
+ });
+ if (!response.ok) throw Error('Email service unavailable');
+ const result=await response.json();
+ if(String(result.success)!=='true')throw Error('Email service did not accept notification');
+}
+
 export async function acceptContact(request, env, language) {
  const failure = (status, error, values, id) => ({status, state:{error, values, id}});
  if (request.headers.has('origin') && request.headers.get('origin') !== new URL(request.url).origin) return failure(403,'invalid');
@@ -47,10 +59,14 @@ export async function acceptContact(request, env, language) {
    const ins=await env.DB.prepare('INSERT INTO contact_messages(request_id,name,email,phone,message,language) VALUES(?,?,?,?,?,?) ON CONFLICT(request_id) DO NOTHING').bind(id,name,email,callback,message,language).run();
    if (!ins.meta?.changes) {
     const existing=await env.DB.prepare('SELECT name,email,phone,message,language FROM contact_messages WHERE request_id=?').bind(id).first();
-    if (!existing || contactKeys.some(key=>existing[key]!==record[key])) status=409;
+    status=existing && contactKeys.every(key=>existing[key]===record[key]) ? 200 : 409;
    }
   } else return failure(503,'busy',values,id);
   if (status===409) return failure(409,'conflict',values);
+  if(status!==200 && env.CONTACT_NOTIFICATION_EMAIL) {
+   try {await notifyContact(env.CONTACT_NOTIFICATION_EMAIL,id,record,new URL(request.url).origin+href(language,contactPath))}
+   catch {console.warn('Contact message saved; email notification needs review:',id)}
+  }
   return {status:303};
  } catch {return failure(503,'busy',values,id);}
 }
