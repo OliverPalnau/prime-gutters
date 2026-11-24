@@ -1,3 +1,4 @@
+import {contactPath,acceptContact} from './contact.mjs';
 import {assessment} from './homeowner.mjs';
 import {mcpEndpoint,businessFacts,assistantIndex} from './assistants.mjs';
 import {paths,renderPage} from './pages.mjs';
@@ -41,6 +42,18 @@ export function createSite(model,assets){
  const mapSource={};
  return {async fetch(request,env){
   const url=new URL(request.url),path=url.pathname;
+  if(path===contactPath || path==='/es/contact/') {
+   const language=path.startsWith('/es/')?'es':'en';
+   const headers={'content-type':'text/html; charset=utf-8','cache-control':'no-store'};
+   if(request.method==='POST'){
+    const result=await acceptContact(request,env,language);
+    if(result.status===303)return new Response(null,{status:303,headers:{location:path+'?received=1','cache-control':'no-store'}});
+    return new Response(renderPage(language,contactPath,model,'',result.state),{status:result.status,headers});
+   }
+   if(!['GET','HEAD'].includes(request.method))return new Response(null,{status:405,headers:{Allow:'GET, HEAD, POST'}});
+   const state={received:url.searchParams.get('received')==='1',unavailable:!env?.DB&&!env?.storeContact};
+   return new Response(request.method==='HEAD'?null:renderPage(language,contactPath,model,'',state),{headers});
+  }
   if(path==='/mcp')return mcpEndpoint(request);
   if(path==='/api/estimates')return estimate(request,env);
   if(!['GET','HEAD'].includes(request.method))return new Response(null,{status:405,headers:{Allow:'GET, HEAD'}});
@@ -57,7 +70,7 @@ export function createSite(model,assets){
   const lang=/^\/es(?:\/|$)/.test(path)?'es':'en';
   let local=lang==='es'?path.slice(3)||'/':path;
   if(!local.endsWith('/'))local+='/';
-  const aliases={'/colors/':'/gutter-colors/','/siding-colors/':'/visualizer/','/quote/':'/estimate/','/about-us/':'/about/','/project-planner/':'/estimate/'};
+  const aliases={'/contact-us/':contactPath,'/colors/':'/gutter-colors/','/siding-colors/':'/visualizer/','/quote/':'/estimate/','/about-us/':'/about/','/project-planner/':'/estimate/'};
   if(local==='/gutter-colors/'&&['roof','siding','trim','guard','surface','shutters','window','door'].some(key=>url.searchParams.has(key)))aliases[local]='/visualizer/';
   if(Object.hasOwn(aliases,local)){url.pathname=href(lang,aliases[local]);return Response.redirect(url.toString(),302)}
   if(paths.includes(local)&&path!==href(lang,local)){url.pathname=href(lang,local);return Response.redirect(url.toString(),308)}

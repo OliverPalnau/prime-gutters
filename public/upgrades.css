@@ -409,3 +409,18 @@ footer .finish-collage a{display:grid;align-content:start;gap:4px;margin:0;paddi
 footer .finish-collage a:is(:hover,:focus-visible){border-color:#80e0f2;color:#80e0f2}
 @media(max-width:520px){.finish-collage{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .local-byline{font-size:.95rem;color:#365663}.local-byline a{color:#006779;text-decoration:underline;text-underline-offset:3px}
+
+.contact-page{background:var(--tint)}
+.contact-layout{display:grid;grid-template-columns: minmax(0,.95fr) minmax(0,1.05fr);align-items:start;gap:clamp(32px,7vw,110px)}
+.contact-layout h1{max-width:12ch;font-size:clamp(40px,5vw,72px);line-height:1.03;color:var(--navy)}
+.contact-intro{max-width:42ch;margin:20px 0 25px;font-size:1.15rem}
+.contact-recipient{display:flex;align-items:center;gap:12px;color:var(--navy)}
+.contact-recipient img{border-radius:50%;object-fit:cover}
+.contact-recipient strong,.contact-recipient span{display:block}
+.contact-urgent{margin-top:24px}.contact-urgent a{text-decoration:underline;white-space:nowrap}
+.contact-form-panel{padding:clamp(20px,3vw,40px);border:1px solid var(--edge);border-radius:14px;background:#fff}
+.contact-form-panel h2{font-size:clamp(25px,2.4vw,33px);margin-bottom:20px}
+.contact-form-panel .fields{gap:15px}.contact-form-panel .fields label{font-size:1rem}
+.contact-form-panel textarea{resize:vertical}.contact-form-panel .btn{margin-top:18px}.contact-form-panel .btn:disabled{opacity:.6}
+.contact-error{margin-bottom:16px;color:#862334}
+@media(max-width:760px){.contact-layout{grid-template-columns:1fr}.contact-layout h1{max-width:none}.contact-form-panel .btn{width:100%}}

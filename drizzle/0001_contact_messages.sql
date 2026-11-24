@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS contact_messages (
+  request_id TEXT PRIMARY KEY NOT NULL,
+  received_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  message TEXT NOT NULL,
+  language TEXT NOT NULL
+);

@@ -1,8 +1,8 @@
 import {get,put} from '@vercel/blob';
 import site from '../dist/server/index.js';
 
-async function storeEstimate(id,record){
- const key='estimates/'+id+'.json';
+async function storeSubmission(folder,id,record){
+ const key=folder+'/'+id+'.json';
  const body=JSON.stringify(record);
  try{
   await put(key,body,{access:'private',addRandomSuffix:false,allowOverwrite:false,contentType:'application/json'});
@@ -23,6 +23,6 @@ export default {
    url.searchParams.delete('__pg_route');
   }
   const hasStore=Boolean(process.env.BLOB_READ_WRITE_TOKEN||process.env.BLOB_STORE_ID);
-  return site.fetch(new Request(url,request),hasStore?{storeEstimate}:{smsEstimates:true});
+  return site.fetch(new Request(url,request),hasStore?{storeEstimate:(id,row)=>storeSubmission('estimates',id,row),storeContact:(id,row)=>storeSubmission('messages',id,row)}:{smsEstimates:true});
  }
 };

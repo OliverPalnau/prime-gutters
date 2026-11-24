@@ -8,7 +8,7 @@ const read=p=>fs.readFileSync(p,'utf8');
 const clientRevision=createHash('sha256');
 for (const file of ['site.css','upgrades.css','app.js','finishes.json']) clientRevision.update(fs.readFileSync('public/'+file));
 const revision=clientRevision.digest('hex').slice(0,12);
-let sources='const finishOptions='+read('public/finishes.json')+';\nconst guardPlanes='+read('public/media/inspector/guard-planes.json')+';\n'+['data','places','projects','collections','icons','features','winter','inspector','homeowner','customer-resources','assistants','additions','pages','router'].map(name=>read('src/'+name+'.mjs').replace(/^import .*?;\n/gm,'').replace(/^export /gm,'')).join('\n').replaceAll('__CLIENT_REVISION__',revision);
+let sources='const finishOptions='+read('public/finishes.json')+';\nconst guardPlanes='+read('public/media/inspector/guard-planes.json')+';\n'+['data','contact','places','projects','collections','icons','features','winter','inspector','homeowner','customer-resources','assistants','additions','pages','router'].map(name=>read('src/'+name+'.mjs').replace(/^import .*?;\n/gm,'').replace(/^export /gm,'')).join('\n').replaceAll('__CLIENT_REVISION__',revision);
 if(vercelBuild){
  const host=process.env.SITE_ORIGIN||('https://'+(process.env.VERCEL_PROJECT_PRODUCTION_URL||process.env.VERCEL_URL||'localhost'));
  const canonical=new URL(host);

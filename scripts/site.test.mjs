@@ -211,3 +211,23 @@ test('only individual reviews with an exact five-star rating are featured',async
   assert.ok(!reviewsSection(lang,true,excluded).includes('<blockquote'));
  }
 });
+
+test('general messages use a private inbox, preserve retries and keep an optional phone',async()=>{
+ const db=new DatabaseSync(':memory:');
+ db.exec(fs.readFileSync('drizzle/0001_contact_messages.sql','utf8'));
+ const env={DB:{prepare(sql){const stmt=db.prepare(sql);return {bind(...args){return {run:async()=>({meta:stmt.run(...args)}),first:async()=>stmt.get(...args)}}}}}};
+ const form={requestId:crypto.randomUUID(),name:'Sample homeowner',email:'sample@example.com',phone:'',message:'Can you match an existing gutter?',website:''};
+ const submit=(input,backend=env,originHeader=origin)=>fetchPath('/contact/',backend,{method:'POST',headers:{origin:originHeader,'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams(input)});
+ for(let i=0;i<2;i++){const r=await submit(form);assert.equal(r.status,303);assert.equal(r.headers.get('location'),'/contact/?received=1');}
+ assert.equal(db.prepare('SELECT count(*) AS n FROM contact_messages').get().n,1);
+ assert.equal((await submit({...form,message:'changed'})).status,409);
+ assert.equal((await submit({...form,email:'invalid'})).status,422);
+ assert.equal((await submit({...form,website:'unsolicited'})).status,422);
+ assert.equal((await submit(form,env,'https://elsewhere.example')).status,403);
+ assert.equal((await submit(form,{})).status,503);
+ const retry=await submit({...form,message:'<script>hi</script>'},{storeContact:async()=>{throw Error('Unavailable')}});
+ assert.equal(retry.status,503);assert.ok((await retry.text()).includes('&lt;script&gt;hi&lt;/script&gt;'));
+ assert.ok(!(await(await fetchPath('/contact/',env)).text()).includes('sample@example.com'));
+ const spanish=await(await fetchPath('/es/contact/',env)).text();assert.ok(spanish.includes('Teléfono (opcional)')&&spanish.includes('action="/es/contact/"'));
+ db.close();
+});

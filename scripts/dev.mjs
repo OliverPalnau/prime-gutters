@@ -5,6 +5,7 @@ import './build.mjs';
 const {default:site}=await import('../dist/server/index.js');
 mkdirSync('.local',{recursive:true});const db=new DatabaseSync('.local/preview.sqlite');
 db.exec(readFileSync('drizzle/0000_estimates.sql','utf8').replace('CREATE TABLE estimates','CREATE TABLE IF NOT EXISTS estimates'));
+db.exec(readFileSync('drizzle/0001_contact_messages.sql','utf8'));
 const env={DB:{prepare(sql){const stmt=db.prepare(sql);return {bind(...args){return {run:async()=>({meta:stmt.run(...args)}),first:async()=>stmt.get(...args)}}}}}};
 const portArg=process.argv.indexOf('--port');
 const port=Number(portArg>=0?process.argv[portArg+1]:process.env.PORT||5173);

@@ -35,7 +35,7 @@ export function assistantHelp(l){
 export function pageGraph(l,path,h,desc,subject){
  const businessId=origin+'/#business',pageUrl=origin+href(l,path);
  const business={'@type':'HomeAndConstructionBusiness','@id':businessId,name:'Prime Gutters',url:origin,telephone:'+16313745916',logo:origin+'/media/brand/prime-gutters-logo.webp',image:origin+media.hero,description:ownerStory(l),address:{'@type':'PostalAddress',addressLocality:'Huntington',addressRegion:'NY',postalCode:'11743',addressCountry:'US'},founder:{'@id':origin+'/#ryan'},sameAs:[yelp,nextdoor,googleReviews],areaServed:counties.map(c=>({'@type':'AdministrativeArea',name:c.name+' County, New York'}))};
- const web={'@id':pageUrl+'#webpage','@type':path==='/about/'?'AboutPage':'WebPage',url:pageUrl,name:h,description:desc,inLanguage:l,about:{'@id':businessId}};
+ const web={'@id':pageUrl+'#webpage','@type':path==='/about/'?'AboutPage':path==='/contact/'?'ContactPage':'WebPage',url:pageUrl,name:h,description:desc,inLanguage:l,about:{'@id':businessId}};
  const graph=[business,{'@type':'Person','@id':origin+'/#ryan',name:'Ryan Moore',image:origin+'/media/people/ryan-moore.webp',jobTitle:'Owner',worksFor:{'@id':businessId},homeLocation:{'@type':'Place',name:'Huntington, New York'}},web];
  if(path==='/faq/'||path==='/'){
   const questions=faqs.map(([q,a])=>({'@type':'Question',name:pick(l,q),acceptedAnswer:{'@type':'Answer',text:pick(l,a)}}));
