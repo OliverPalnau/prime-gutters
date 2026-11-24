@@ -39,6 +39,15 @@ async function notifyContact(recipient,id,record,page) {
  if(String(result.success)!=='true')throw Error('relay '+(/activat|confirm/i.test(String(result.message))?'activation pending':'declined'));
 }
 
+export function contactEmailHandoff(alias,record,page,id){
+ const es=record.language==='es';
+ const target='https://formsubmit.co/'+alias;
+ const fields={name:record.name,email:record.email,phone:record.phone||'',message:record.message,reference:id,
+  _subject:'Prime Gutters · New contact message',_replyto:record.email,_next:page+'?received=1',_captcha:'false',_template:'table'};
+ const hidden=Object.entries(fields).map(([key,val])=>'<input type="hidden" name="'+key+'" value="'+esc(val)+'">').join('');
+ return '<!doctype html><html lang="'+(es?'es':'en')+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Prime Gutters</title><link rel="stylesheet" href="/site.css"></head><body><main class="wrap section"><h1>'+(es?'Mensaje recibido.':'Message received.')+'</h1><p>'+(es?'Su mensaje está guardado. Estamos enviando una notificación por correo.':'Your message is saved. We’re sending the email notification.')+'</p><form id="mail-handoff" action="'+target+'" method="post">'+hidden+'<button class="btn cyan">'+(es?'Enviar la notificación':'Send email notification')+'</button></form><p><a href="'+esc(page)+'?received=1">'+(es?'Volver a Prime Gutters':'Return to Prime Gutters')+'</a></p></main><script>document.getElementById("mail-handoff").submit()</script></body></html>';
+}
+
 export async function acceptContact(request, env, language) {
  const failure = (status, error, values, id) => ({status, state:{error, values, id}});
  if (request.headers.has('origin') && request.headers.get('origin') !== new URL(request.url).origin) return failure(403,'invalid');
@@ -63,6 +72,10 @@ export async function acceptContact(request, env, language) {
    }
   } else return failure(503,'busy',values,id);
   if (status===409) return failure(409,'conflict',values);
+  if(status!==200 && /^[a-f0-9]{32}$/.test(env.CONTACT_PUBLIC_FORM_ID||'')){
+   const page=new URL(request.url).origin+href(language,contactPath);
+   return {status:200,handoff:contactEmailHandoff(env.CONTACT_PUBLIC_FORM_ID,record,page,id)};
+  }
   if(status!==200 && env.CONTACT_NOTIFICATION_EMAIL) {
    try {await notifyContact(env.CONTACT_NOTIFICATION_EMAIL,id,record,new URL(request.url).origin+href(language,contactPath))}
    catch(error){console.warn('Contact message saved; email notification needs review:',id, /^(?:relay (?:HTTP \d{3}|activation pending|declined))$/.test(error.message)?error.message:error.name)}

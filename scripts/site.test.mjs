@@ -231,3 +231,16 @@ test('general messages use a private inbox, preserve retries and keep an optiona
  const spanish=await(await fetchPath('/es/contact/',env)).text();assert.ok(spanish.includes('Teléfono (opcional)')&&spanish.includes('action="/es/contact/"'));
  db.close();
 });
+
+test('a saved contact can notify the configured inbox without exposing its email address', async()=>{
+ const {acceptContact}=await import('../src/contact.mjs');
+ const id=crypto.randomUUID();
+ const post=()=>new Request('https://example.com/es/contact/',{method:'POST',body:new URLSearchParams({requestId:id,name:'Sample',email:'visitor@example.com',message:'A question <about> guards'})});
+ const config={CONTACT_PUBLIC_FORM_ID:'a'.repeat(32),CONTACT_NOTIFICATION_EMAIL:'private@example.com',storeContact:async()=>201};
+ const first=await acceptContact(post(),config,'es');
+ assert.equal(first.status,200);
+ assert.match(first.handoff,/A question &lt;about&gt; guards/);
+ assert.match(first.handoff,/https:\/\/example.com\/es\/contact\/\?received=1/);
+ assert.ok(!first.handoff.includes('private@example.com'));
+ assert.equal((await acceptContact(post(),{...config,storeContact:async()=>200},'es')).status,303);
+});

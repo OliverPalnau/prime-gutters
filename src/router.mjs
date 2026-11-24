@@ -47,6 +47,7 @@ export function createSite(model,assets){
    const headers={'content-type':'text/html; charset=utf-8','cache-control':'no-store'};
    if(request.method==='POST'){
     const result=await acceptContact(request,env,language);
+    if(result.handoff)return new Response(result.handoff,{headers:{...headers,'referrer-policy':'strict-origin-when-cross-origin','content-security-policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'self'; form-action https://formsubmit.co 'self'; base-uri 'none'"}});
     if(result.status===303)return new Response(null,{status:303,headers:{location:path+'?received=1','cache-control':'no-store'}});
     return new Response(renderPage(language,contactPath,model,'',result.state),{status:result.status,headers});
    }

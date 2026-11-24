@@ -23,6 +23,6 @@ export default {
    url.searchParams.delete('__pg_route');
   }
   const hasStore=Boolean(process.env.BLOB_READ_WRITE_TOKEN||process.env.BLOB_STORE_ID);
-  return site.fetch(new Request(url,request),hasStore?{CONTACT_NOTIFICATION_EMAIL:process.env.CONTACT_NOTIFICATION_EMAIL,storeEstimate:(id,row)=>storeSubmission('estimates',id,row),storeContact:(id,row)=>storeSubmission('messages',id,row)}:{smsEstimates:true});
+  return site.fetch(new Request(url,request),hasStore?{CONTACT_NOTIFICATION_EMAIL:process.env.CONTACT_NOTIFICATION_EMAIL,CONTACT_PUBLIC_FORM_ID:process.env.CONTACT_PUBLIC_FORM_ID,storeEstimate:(id,row)=>storeSubmission('estimates',id,row),storeContact:(id,row)=>storeSubmission('messages',id,row)}:{smsEstimates:true});
  }
 };
