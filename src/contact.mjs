@@ -28,15 +28,15 @@ export function contactSection(l, state = {}) {
 }
 
 async function notifyContact(recipient,id,record,page) {
- const response=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(recipient),{
-  method:'POST',headers:{Accept:'application/json','Content-Type':'application/json'},
+ const response=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(recipient).replace('%40','@'),{
+  method:'POST',headers:{Accept:'application/json','Content-Type':'application/json',Origin:new URL(page).origin,Referer:page},
   signal:AbortSignal.timeout(6500),
   body:JSON.stringify({name:record.name,email:record.email,phone:record.phone||'—',message:record.message,reference:id,
    _subject:'Prime Gutters · New contact message',_replyto:record.email,_url:page,_template:'table'})
  });
- if (!response.ok) throw Error('Email service unavailable');
+ if (!response.ok) throw Error('relay HTTP '+response.status);
  const result=await response.json();
- if(String(result.success)!=='true')throw Error('Email service did not accept notification');
+ if(String(result.success)!=='true')throw Error('relay '+(/activat|confirm/i.test(String(result.message))?'activation pending':'declined'));
 }
 
 export async function acceptContact(request, env, language) {
@@ -65,7 +65,7 @@ export async function acceptContact(request, env, language) {
   if (status===409) return failure(409,'conflict',values);
   if(status!==200 && env.CONTACT_NOTIFICATION_EMAIL) {
    try {await notifyContact(env.CONTACT_NOTIFICATION_EMAIL,id,record,new URL(request.url).origin+href(language,contactPath))}
-   catch {console.warn('Contact message saved; email notification needs review:',id)}
+   catch(error){console.warn('Contact message saved; email notification needs review:',id, /^(?:relay (?:HTTP \d{3}|activation pending|declined))$/.test(error.message)?error.message:error.name)}
   }
   return {status:303};
  } catch {return failure(503,'busy',values,id);}
